@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd">
+    <mvc:annotation-driven/>
+    <context:component-scan base-package="com.taiquan.controller"/>
+    <!--<import resource="classpath:applicationContext.xml"/>-->
+    <!--很奇怪为什么controller中不能使用service，按说是service中不能引用servlet中的配置，而servl-->
+    <mvc:annotation-driven conversion-service="conversionFormatService"/>
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/company/*"/>
+            <mvc:mapping path="/customer/*"/>
+            <mvc:exclude-mapping path="/company/nameList.*"/>
+            <bean class="com.taiquan.controller.interceptor.UserInceptor"/>
+        </mvc:interceptor>
+       <!-- <mvc:interceptor>
+            <mvc:mapping path="/company/*"/>
+            <mvc:mapping path="/customer/*"/>
+            <mvc:exclude-mapping path="/company/nameList.*"/>
+            <bean class="com.taiquan.controller.interceptor.AfterInterceptor"/>
+        </mvc:interceptor>-->
+    </mvc:interceptors>
+    <!--<bean id="deleteDetailsSuccess" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" p:modelKey="success"/>-->
+    <bean id="conversionFormatService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="formatters">
+            <list>
+                <bean class="com.taiquan.convertion.PhoneNumbersFormat"/>
+                <bean class="com.taiquan.convertion.StringAndDateFormatter"/>
+                <!--<bean class="org.springframework.format.datetime.DateFormatter"/>-->
+                <!--这个dateFormatter不只是formatter，还可以用来解析时间字符串-->
+                <!--<bean class="org.springframework.format.number.NumberStyleFormatter"/>-->
+                <!--<bean class="org.springframework.format.number.CurrencyStyleFormatter"/>-->
+                <bean class="com.taiquan.convertion.TextureSetFormatter"/>
+            </list>
+        </property>
+        <property name="converters">
+            <list>
+                <bean class="com.taiquan.convertion.StringToAddress"/>
+                <bean class="com.taiquan.convertion.NumberToAddressType"/>
+                <bean class="com.taiquan.convertion.NumberToCapitalType"/>
+                <bean class="com.taiquan.convertion.NumberToContactsType"/>
+                <bean class="com.taiquan.convertion.NumberToCustomerType"/>
+                <bean class="com.taiquan.convertion.NumberToPhoneType"/>
+                <bean class="com.taiquan.convertion.StringToTextureType"/>
+                <bean class="com.taiquan.convertion.StringToGoodDetailType"/>
+                <!--不注册默认的转换器会怎么样-->
+            </list>
+        </property>
+    </bean>
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:prefix="/WEB-INF/content" p:suffix=".jsp" p:order="100"/>
+    <!--BeanName解析器-->
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="10"/>
+
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"
+          p:messageConverters-ref="messageConverters"/>
+    <util:list id="messageConverters">
+        <bean class="org.springframework.http.converter.BufferedImageHttpMessageConverter"/>
+        <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+        <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+            <constructor-arg name="defaultCharset" value="utf-8"/>
+        </bean>
+        <bean class="org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter"/>
+        <bean class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter"
+          p:marshaller-ref="xmlMarshaller" p:unmarshaller-ref="xmlMarshaller"/>
+        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+    </util:list>
+    <bean id="xmlMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller">
+        <property name="streamDriver">
+            <bean class="com.thoughtworks.xstream.io.xml.StaxDriver"/>
+        </property>
+        <property name="annotatedClasses">
+            <list>
+                <value>com.taiquan.bean.ContactDetailBean</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="10485760"/>
+    </bean>
+
+</beans>

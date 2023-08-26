@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS newsteelsystem;
+CREATE DATABASE newsteelsystem DEFAULT CHARSET utf8;

@@ -1,0 +1,17 @@
+1.在update一个数据库对象时，该对象是否会被持久化，即是否能够获得ID，并得到搞对象，在本例子中，所有的service中update方法，都是按照能够返回持久化对象进行的
+2、update一个对象时，其内部的对象，如Order的Good对象，是否也被update了？不得而知，在OrderService中按照笨办法来尝试，以后可以试试别的方法；
+3、在类似于本例中，good有众多的子类，save时，使用good的Dao能否正确的保存子类对象？本例中采用笨办法
+4、在OrderService中，addGood方法返回的good是父类的实例，还是子类的实例，不太清楚，添加一行打印代码，测试一下；
+5、在OrderService中，getGoodById方法，返回的good类型，如果是其他类型，是否包含其他参数，还是被强制转换成了good类型？
+    打印一下试试，不过这个打印可能并不能确认我想要的答案。我的问题是这个good还是否可以转换成其他类型，而参数不丢失；
+    如果参数丢失，是不是不同的类型需要不同的get方法；
+6、Order addOrder(Order order) 和Order updateOrder(Order order)中是否需要手动的存储good；
+7、鉴于经验1，在实体中的无参构造器中添加初始化语句，是不是可以解决？在Company和Customer中尝试一下
+8、在继承中的user和Manager中，user添加manager字段，创建的新行应该为managerId，但是引用的依然是userId
+9.如果请求的是JSON，则在请求url以json为后缀，在CompanyController 的addAddAddress中应用；
+10,使用jqeury获取元素本身，使用$(this)；
+11、输入框动态加载搜索内容的问题，在header.jsp中有所展示，内容在dynamicTip.js中
+12,浏览器中，IE会因为placeholder的变化触发propertychange
+##############################################################################################################
+总结的经验：
+1、在实例的集合属性中，创建该实例，通过getLists.add(Object obj)不能向其中添加元素，会发生空指针错误。可能是因为创建的实例中，集合属性都是空的；这时候getList

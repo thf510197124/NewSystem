@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="NewSystem20191221:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>NewSystem20191221</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="newSystem.war">
+      <element id="artifact" artifact-name="NewSystem20191221:war exploded" />
+    </root>
+  </artifact>
+</component>
